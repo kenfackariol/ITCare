@@ -1,43 +1,42 @@
 const logger = require('./logger');
+const { Sequelize } = require('sequelize');
 
-module.exports = {
+const env = process.env.NODE_ENV || 'development';
+
+const baseConfig = {
+  username: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  host: process.env.DB_HOST,
+  dialect: process.env.DB_DIALECT || 'mysql',
+};
+
+const config = {
   development: {
-    username: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    host: process.env.DB_HOST,
-    dialect: 'mysql',
+    ...baseConfig,
     logging: (msg) => logger.debug(msg)
   },
   test: {
-    username: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    host: process.env.DB_HOST,
-    dialect: 'mysql',
+    ...baseConfig,
     logging: false
   },
   production: {
-    username: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    host: process.env.DB_HOST,
-    dialect: 'mysql',
+    ...baseConfig,
     logging: false
   }
 };
 
-const { Sequelize } = require('sequelize');
+// This is for Sequelize CLI
+module.exports = config;
 
-const env = process.env.NODE_ENV || 'development';
-const config = module.exports[env];
-
-const sequelize = new Sequelize(config.database, config.username, config.password, config);
+// This is for your application
+const sequelize = new Sequelize(config[env]);
 
 const connectDB = async () => {
   try {
     await sequelize.authenticate();
     logger.info('Database connection has been established successfully.');
+    logger.info('Model associations have been applied.');
   } catch (error) {
     logger.error('Unable to connect to the database:', error);
     process.exit(1);

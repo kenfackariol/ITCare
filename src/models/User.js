@@ -45,8 +45,17 @@ const User = sequelize.define('User', {
   isActive: {
     type: DataTypes.BOOLEAN,
     defaultValue: true
+  },
+  createdAt: {
+    allowNull: false,
+    type: DataTypes.DATE
+  },
+  updatedAt: {
+    allowNull: false,
+    type: DataTypes.DATE
   }
 }, {
+  tableName: 'users',
   hooks: {
     beforeCreate: async (user) => {
       user.password = await User.hashPassword(user.password);
@@ -65,16 +74,16 @@ User.hashPassword = async (password) => {
   return bcrypt.hash(password, salt);
 };
 
-User.findByEmail = function(email) {
+User.findByEmail = function (email) {
   return this.findOne({ where: { email, isActive: true } });
 };
 
 // Instance Methods
-User.prototype.isValidPassword = async function(password) {
+User.prototype.isValidPassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
-User.prototype.toJSON = function() {
+User.prototype.toJSON = function () {
   const values = { ...this.get() };
   delete values.password;
   return values;
