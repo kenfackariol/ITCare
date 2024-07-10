@@ -14,6 +14,36 @@ npm install
 To set up the database, run the following commands:
 
 
+### Environment Variables
+
+To set up your environment variables:
+
+1. Locate the `.env.example` file in the root directory of the project.
+2. Create a copy of this file and name it `.env`.
+3. Open the `.env` file and fill in the necessary values for each variable.
+
+#### For Linux/macOS users:
+
+You can create the `.env` file by running the following command in your terminal:
+
+```bash
+cp .env.example .env
+```
+
+#### For Windows users:
+
+You can create the `.env` file by running the following command in Command Prompt:
+
+```cmd
+copy .env.example .env
+```
+
+After creating the `.env` file:
+
+1. Open the `.env` file in a text editor.
+2. Replace the placeholder values with your actual configuration details.
+
+
 # Run migrations
 npm run db:migrate
 
