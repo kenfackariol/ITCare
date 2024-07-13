@@ -76,6 +76,13 @@ class UserService {
 
     return { message: 'Account deactivated successfully' };
   }
+
+  async getAllUsers() {
+    const users = await User.findAll({
+      attributes: { exclude: ['password'] },
+    });
+    return users;
+  }
 }
 
 module.exports = new UserService();

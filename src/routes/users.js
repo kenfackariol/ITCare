@@ -12,7 +12,9 @@ router.use(protect); // All routes below this line require authentication
 router.get('/profile', userController.getProfile);
 router.patch('/profile', userController.updateProfile);
 router.patch('/change-password', userController.changePassword);
-router.delete('/deactivate', userController.deactivateAccount);
+router.delete('/deactivate', userController.deactivateAccount);//technologie res API 
+
+router.get('/allUsers', restrictTo('admin'), userController.getAllUsers); // New route to get all users
 
 // Admin only route example
 router.get('/all', restrictTo('admin'), (req, res) => {
@@ -20,3 +22,4 @@ router.get('/all', restrictTo('admin'), (req, res) => {
 });
 
 module.exports = router;
+
