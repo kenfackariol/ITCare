@@ -1,4 +1,4 @@
-const { Material } = require('./models/Material');
+const { Material } = require('../models/Material');
 
 class MaterialService {
   async createMaterial(data) {
@@ -67,4 +67,4 @@ class MaterialService {
   }
 }
 
-module.exports = MaterialService;
+module.exports = new MaterialService();

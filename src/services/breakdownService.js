@@ -1,4 +1,5 @@
-const { Breakdown } = require('./models/Breakdown');
+const { Breakdown } = require('../models/Breakdown');
+const AppError = require('../utils/appError');
 
 class BreakdownService {
     async createBreakdown(data) {
@@ -73,4 +74,4 @@ class BreakdownService {
     }
 }
 
-module.exports = BreakdownService;
+module.exports = new BreakdownService();
