@@ -1,4 +1,4 @@
-const { Breakdown } = require('../models/Breakdown');
+const Breakdown = require('../models/Breakdown');
 const AppError = require('../utils/appError');
 
 class BreakdownService {
