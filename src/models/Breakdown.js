@@ -48,6 +48,10 @@ const Breakdown = sequelize.define('Breakdown', {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
+    materialId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
     createdAt: {
         allowNull: false,
         type: DataTypes.DATE
