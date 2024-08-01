@@ -192,13 +192,27 @@ describe('BreakdownService', () => {
             const breakdowns = [{ id: 1 }, { id: 2 }];
             const startDate = '2023-01-01';
             const endDate = '2023-12-31';
-
+    
+            // Mock the findByDateRange method
             Breakdown.findByDateRange.mockResolvedValue(breakdowns);
-
+    
             const result = await BreakdownService.getBreakdownsByDateRange(startDate, endDate);
-
-            expect(Breakdown.findByDateRange).toHaveBeenCalledWith(startDate, endDate);
+    
+            // Update the expectation to use Date objects
+            expect(Breakdown.findByDateRange).toHaveBeenCalledWith(
+                new Date('2023-01-01T00:00:00.000Z'),
+                new Date('2023-12-31T00:00:00.000Z')
+            );
             expect(result).toEqual(breakdowns);
+        });
+    
+        it('should throw an error if date format is invalid', async () => {
+            const invalidStartDate = 'invalid-date';
+            const validEndDate = '2023-12-31';
+    
+            await expect(BreakdownService.getBreakdownsByDateRange(invalidStartDate, validEndDate))
+                .rejects
+                .toThrow('Invalid start date format: invalid-date');
         });
     });
 
@@ -218,17 +232,27 @@ describe('BreakdownService', () => {
 
     describe('getBreakdownsByUser', () => {
         it('should return breakdowns by user ID', async () => {
-            const breakdowns = [{ id: 1 }, { id: 2 }];
-            const userId = 1;
-
-            Breakdown.findByUser.mockResolvedValue(breakdowns);
-
-            const result = await BreakdownService.getBreakdownsByUser(userId);
-
-            expect(Breakdown.findByUser).toHaveBeenCalledWith(userId);
-            expect(result).toEqual(breakdowns);
+          const breakdowns = [{ id: 1 }, { id: 2 }];
+          const userId = '1'; // Note: String type to test parsing
+    
+          Breakdown.findAll.mockResolvedValue(breakdowns);
+    
+          const result = await BreakdownService.getBreakdownsByUser(userId);
+    
+          expect(Breakdown.findAll).toHaveBeenCalledWith({
+            where: { userId: 1 } // Note: Number type after parsing
+          });
+          expect(result).toEqual(breakdowns);
         });
-    });
+    
+        it('should throw an error if user ID is invalid', async () => {
+          const invalidUserId = 'not-a-number';
+    
+          await expect(BreakdownService.getBreakdownsByUser(invalidUserId))
+            .rejects
+            .toThrow(AppError);
+        });
+      });
 
 
     describe('getAllBreakdowns', () => {
