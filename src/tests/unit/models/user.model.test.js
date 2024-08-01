@@ -5,12 +5,12 @@ const { sequelize } = require('@src/config/database');
 describe('User Model', () => {
   let user;
 
-  beforeAll(async () => {
-    await sequelize.sync({ force: true });
+  afterEach(async () => {
+    await User.destroy({ where: {} });
   });
 
   afterAll(async () => {
-    await sequelize.close();
+    await sequelize.close(); // Ensure all connections are closed
   });
 
   beforeEach(() => {
@@ -92,4 +92,29 @@ describe('User Model', () => {
     const newUser = User.build({ email: 'new@example.com', password: 'password123' });
     expect(newUser.isActive).toBe(true);
   });
+
+  it('should not create a user with an invalid role', async () => {
+    user.role = 'invalid-role';
+    await expect(user.save()).rejects.toThrow('Validation error: Role must be user or admin');
+  });
+  
+  
+  it('should not create a user with a duplicate email', async () => {
+    await user.save();
+    const duplicateUser = User.build({
+      email: 'test@example.com',
+      password: 'password123',
+      role: 'user',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    });
+    await expect(duplicateUser.save()).rejects.toThrow('Validation error');
+  });
+  
+  it('should set isActive to false when soft deleted', async () => {
+    await user.save();
+    user.isActive = false;
+    await user.save();
+    expect(user.isActive).toBe(false);
+  });  
 });

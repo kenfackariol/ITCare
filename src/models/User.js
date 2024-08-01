@@ -37,7 +37,16 @@ const User = sequelize.define('User', {
   role: {
     type: DataTypes.ENUM('user', 'admin'),
     defaultValue: 'user',
-    allowNull: false
+    allowNull: false,
+    validate: {
+      isIn: {
+        args: [['user', 'admin']],
+        msg: 'Role must be user or admin'
+      },
+      notNull: {
+        msg: 'Role is required'
+      }
+    }
   },
   lastLogin: {
     type: DataTypes.DATE
