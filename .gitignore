@@ -1,5 +1,7 @@
 node_modules
 .vscode
 .env
+.env.test
 combined.log
 error.log
+roadmap.md

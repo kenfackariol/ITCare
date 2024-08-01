@@ -1,4 +1,4 @@
-const { DataTypes } = require('sequelize');
+const { DataTypes, Op } = require('sequelize');
 const { sequelize } = require('../config/database');
 
 const Breakdown = sequelize.define('Breakdown', {
@@ -69,7 +69,7 @@ Breakdown.findByDateRange = function (startDate, endDate) {
     return this.findAll({
         where: {
             start_date_intervention: {
-                [Op.between]: [startDate, endDate]
+                [Op.between]: [new Date(startDate), new Date(endDate)]
             }
         }
     });
@@ -100,12 +100,13 @@ Breakdown.findByUser = function(userId) {
   
   // Instance Methods
   Breakdown.prototype.getFullDetails = async function() {
-    const materials = await this.getMaterials();
-    const user = await this.getUser();
+    const material = await this.getMaterial(); // Fetch related material
+    const user = await this.getUser(); // Fetch related user
     return {
       ...this.toJSON(),
-      materials: materials.map(m => m.toJSON()),
+      material: material ? material.toJSON() : null,
       user: user ? user.toJSON() : null
     };
   };
+  
 module.exports = Breakdown;

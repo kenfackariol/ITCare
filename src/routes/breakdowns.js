@@ -1,29 +1,34 @@
 const express = require('express');
-const router = express.Router();
 const breakdownController = require('../controllers/breakdownController');
+const { protect, restrictTo } = require('../middleware/authMiddleware');
 
-// Create a new breakdown
-router.post('/createBreak', breakdownController.createBreakdown);
+const router = express.Router();
 
-// Get all breakdowns
-router.get('/allBreakdown', breakdownController.getAllBreakdowns);
+// Apply authentication to all routes
+router.use(protect); 
 
-// Get a breakdown by ID
-router.get('/:idGet', breakdownController.getBreakdownById);
+// Signal a Breakdown
+router.post('/', breakdownController.createBreakdown); // Any authenticated user
 
-// Update a breakdown by ID
-router.put('/:idUpt', breakdownController.updateBreakdown);
+// Get Breakdown by ID
+router.get('/:id', breakdownController.getBreakdownById); // Any authenticated user
 
-// Delete a breakdown by ID
-router.delete('/:idDel', breakdownController.deleteBreakdown);
+// Get All Breakdowns
+router.get('/', restrictTo('admin'), breakdownController.getAllBreakdowns); // Only admins
 
-// Get breakdowns by date range
-router.get('/date-range/:startDate/:endDate', breakdownController.getBreakdownsByDateRange);
+// Update Breakdown
+router.patch('/:id', restrictTo('admin', 'manager'), breakdownController.updateBreakdown); // Admins and managers
 
-// Get breakdowns by requester name
-router.get('/requester/:requesterName', breakdownController.getBreakdownsByRequester);
+// Delete Breakdown
+router.delete('/:id', restrictTo('admin', 'manager'), breakdownController.deleteBreakdown); // Admins and managers
 
-// Get breakdowns by user ID
-router.get('/user/:userId', breakdownController.getBreakdownsByUser);
+// Get Breakdowns by Date Range
+router.get('/date-range/:startDate/:endDate', breakdownController.getBreakdownsByDateRange); // Any authenticated user
+
+// Get Breakdowns by Requester
+router.get('/requester/:requesterName', breakdownController.getBreakdownsByRequester); // Any authenticated user
+
+// Get Breakdowns by User
+router.get('/user/:userId', breakdownController.getBreakdownsByUser); // Any authenticated user
 
 module.exports = router;
