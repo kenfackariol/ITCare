@@ -21,5 +21,7 @@ router.get('/all', restrictTo('admin'), (req, res) => {
   // Fetch all users logic here
 });
 
+router.get('/me', userController.getMe)
+
 module.exports = router;
 

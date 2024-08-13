@@ -37,3 +37,7 @@ exports.getAllUsers = catchAsync(async (req, res) => {
   const users = await userService.getAllUsers();
   res.status(200).json(users);
 });
+
+exports.getMe = catchAsync(async (req, res) => {
+  res.status(200).json(req.user)
+})
